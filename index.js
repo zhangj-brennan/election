@@ -56,7 +56,7 @@ function drawNationalComparisonChart(statesToInclude,countyDif,nationalData,divN
 
     var svg = d3.select("#"+divName).append("svg").attr("width",w).attr("height",h)
 
-    var xScale = d3.scaleLinear().domain([-30,30]).range([w-p*2,0])
+    var xScale = d3.scaleLinear().domain([-40,40]).range([w-p*2,0])
     var yScale = d3.scaleLinear().domain([2004,2024]).range([0,h-p*2])
     var widthScale = d3.scaleLinear().domain([0,5000000]).range([3,10])
     var xAxis = d3.axisTop().scale(xScale).ticks(5)
@@ -180,7 +180,7 @@ function drawChart(statesToInclude,countyDif,nationalData,divName,formattedState
 
     var svg = d3.select("#"+divName).append("svg").attr("width",w).attr("height",h)
 
-    var xScale = d3.scaleLinear().domain([-50,50]).range([w-p*2,0])
+    var xScale = d3.scaleLinear().domain([-40,40]).range([w-p*2,0])
     var yScale = d3.scaleLinear().domain([2004,2024]).range([0,h-p*2])
     var widthScale = d3.scaleLinear().domain([0,5000000]).range([3,10])
 
