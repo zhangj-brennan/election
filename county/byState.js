@@ -17,8 +17,8 @@ Promise.all([d3.csv("REP_DEM_countypres_2000-2020.csv")])
 
 
 var temp = [3,4,5,3,6,7]
-var w = 300
-var h = 300
+var w = 400
+var h = 400
 var p = 30
 
 var xScale = d3.scaleLinear().domain([-100,100]).range([0,w-p*3])
