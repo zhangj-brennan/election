@@ -34,6 +34,7 @@ for(var c in countyDif){
         .on("mouseover",function(e,d){
             d3.select(this).attr("stroke","red")
             d3.select("#label").html(d3.select(this).attr("name")+" "+d3.select(this).attr("state")+" "+d3.select(this).attr("total"))
+            console.log(d3.select(this).attr("data"))
 
             svg.selectAll(".yearLabels")
             .data(countyDif[d3.select(this).attr("countyFips")])
