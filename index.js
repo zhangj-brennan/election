@@ -75,7 +75,7 @@ function drawNationalComparisonChart(statesToInclude,countyDif,nationalData,divN
     var yAxis = d3.axisLeft().scale(yScale).tickValues([2004,2008,2012,2016,2020,2024]).tickFormat(function(d){return String(d)}).tickSize(w-p*2)
     svg.append("g").call(yAxis).attr("transform","translate("+(w-p)+","+p+")").attr("stroke-width","1")
     .attr("opacity",".3")
-    var cScale = d3.scaleLinear().domain([-10,0,10]).range(["red","gray","blue"])
+    var cScale = d3.scaleLinear().domain([-5,5]).range(["red","blue"])
     var lines = svg.append("g").attr("transform","translate("+p+","+p+")")
    
     
@@ -205,7 +205,7 @@ function drawChart(statesToInclude,countyDif,nationalData,divName,formattedState
     var yAxis = d3.axisLeft().scale(yScale).tickValues([2004,2008,2012,2016,2020,2024]).tickFormat(function(d){return String(d)}).tickSize(w-p*2)
     svg.append("g").call(yAxis).attr("transform","translate("+(w-p)+","+p+")").attr("stroke-width","1")
     .attr("opacity",".3")
-    var cScale = d3.scaleLinear().domain([-10,0,10]).range(["red","gray","blue"])
+    var cScale = d3.scaleLinear().domain([-5,5]).range(["red","blue"])
     var lines = svg.append("g").attr("transform","translate("+p+","+p+")")
 
     lines.append("path")
@@ -367,8 +367,18 @@ function formatByState(data){
         var total = parseInt(data[i]["totalvotes"])
         var party = data[i]["party_simplified"]
 
+
         if(fips !="undefined" &&fips != "NA"){
             if(Object.keys(formatted).indexOf(fips)>-1){
+
+                if(Object.keys(formatted[fips]).indexOf("total")>-1){
+                    formatted[fips]["total"][year]=total
+                }else{
+                    formatted[fips]["total"]={}
+                    formatted[fips]["total"][year]=total
+                }
+
+
                 if(Object.keys(formatted[fips]).indexOf(party)>-1){
                     if(Object.keys(formatted[fips][party]).indexOf(year)>-1){
                         formatted[fips][party][year]+=votes
@@ -378,15 +388,18 @@ function formatByState(data){
                 }else{
                     formatted[fips][party]={}
                     formatted[fips][party][year]=votes
+
                 }
             }else{
                 formatted[fips]={}
                 formatted[fips]["state"]=state
                 formatted[fips][party]={}
                 formatted[fips][party][year]=votes
+            
             }
         }       
     }
+    console.log(formatted)
 
 var difference = {}
 
@@ -395,11 +408,10 @@ for(var f in formatted){
     years.forEach(function(d){
 
         if(formatted[f]["DEMOCRAT"]!=undefined){
-            var dVotes = parseInt(formatted[f]["DEMOCRAT"][d])
+            var dVotes = parseInt(formatted[f]["DEMOCRAT"][d]) 
             var rVotes = parseInt(formatted[f]["REPUBLICAN"][d])
-            var total = dVotes+rVotes
+            var total = parseInt(formatted[f]["total"][d])
             var dMinusR = (dVotes-rVotes)/(total)*100
-
             difference[f].push({year:d,dMinusR:dMinusR,sum:total,state:formatted[f]["state"]})
         }
     

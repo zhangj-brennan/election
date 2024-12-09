@@ -12,16 +12,16 @@
             display: none;
         }
         @font-face {
-            font-family: "bc";
-            src: url("Benton Sans/Benton Sans Regular.otf") format("truetype");
+            font-family: "bc_REGULAR";
+            src: url("../Benton Sans/Benton Sans Regular.otf") format("truetype");
         }
 
         body{
-            font-family:bc;
-            font-size:.9em;
+            font-family: "bc_REGULAR";
+            font-size:1.2em;
         }
         svg text{
-            font-family:bc;
+            font-family: "bc_REGULAR";
             font-size:.8em;
         }
         .block{
@@ -29,21 +29,30 @@
             display:inline-block;
             padding:10px;
         }
+        #label{
+            position:absolute;
+            background-color:#ffffff;
+            width:100px;
+            padding:5px;
+            font-size:.6em;
+            visibility:hidden;
+        }
     </style>
 	
 
 
-<script type="text/javascript" src="updated_js/d3.v7.min.js"></script>
+<script type="text/javascript" src="../updated_js/d3.v7.min.js"></script>
 <script type="text/javascript" src="https://raw.github.com/larskotthoff/d3/varline/src/svg/line-variable.js"></script>
 
-<script type="text/javascript" src="index.js"></script>
+<script type="text/javascript" src="byState.js"></script>
 </head>
 
 <body>
 <script>
 	
 </script>
-<div id="label">counties</div>
+<div id="title">COUNTIES BY STATE 2000 - 2020</div>
+<div id="label"></div>
 <div id="container">
 
 

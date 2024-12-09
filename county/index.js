@@ -13,13 +13,14 @@ var temp = [3,4,5,3,6,7]
 var xScale = d3.scaleLinear().domain([-100,100]).range([1000,0])
 var yScale = d3.scaleLinear().domain([2000,2020]).range([0,500])
 var widthScale = d3.scaleLinear().domain([0,200000]).range([0,10])
+var colorScale = d3.scaleLinear().domain([-40,0,40]).range(["red","#aaa","blue"])
 for(var c in countyDif){
         svg.append("path")
         .attr("total",countyDif[c][0].sum)
         .attr("name",countyDif[c][0].name)
         .attr("state",countyDif[c][0].state)
         .attr("countyFips",c)
-        .attr('stroke',"black")
+        .attr('stroke',colorScale(countyDif[c][0].dMinusR))
         .attr('fill',"none")
         .attr("stroke-width",widthScale(countyDif[c][0].sum))
         .attr("opacity",.1)
@@ -33,7 +34,6 @@ for(var c in countyDif){
         .on("mouseover",function(e,d){
             d3.select(this).attr("stroke","red")
             d3.select("#label").html(d3.select(this).attr("name")+" "+d3.select(this).attr("state")+" "+d3.select(this).attr("total"))
-            console.log(d3.select(this).attr("data"))
 
             svg.selectAll(".yearLabels")
             .data(countyDif[d3.select(this).attr("countyFips")])
