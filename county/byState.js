@@ -17,13 +17,13 @@ Promise.all([d3.csv("REP_DEM_countypres_2000-2020.csv")])
 
 
 var temp = [3,4,5,3,6,7]
-var w = 400
-var h = 400
-var p = 30
+var w = 800
+var h = 300
+var p = 40
 
 var xScale = d3.scaleLinear().domain([-100,100]).range([0,w-p*3])
 var yScale = d3.scaleLinear().domain([2000,2020]).range([0,h-p*2])
-var widthScale = d3.scaleLinear().domain([1000,200000]).range([2,10])
+var widthScale = d3.scaleLinear().domain([500,200000]).range([2,12])
 //var colorScale = d3.scaleLinear().domain([-10,10]).range(["red","blue"])
 var colorScale = d3.scaleLinear().domain([-5,5]).range(["blue","red"])
 

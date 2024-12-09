@@ -39,14 +39,16 @@ for(var s in data){
 }
 var years = [2004,2008,2012,2016,2020]
 
+var w = 400
+var p = 40
+var h = 300
+
 function drawNationalComparisonChart(statesToInclude,countyDif,nationalData,divName,formattedState2024){
     var nationalDictionary = {}
     for(var n in nationalData){
         nationalDictionary[nationalData[n].year]=nationalData[n].dMinusR
     }
-    var w = 600
-    var p = 40
-    var h = 400
+
     var popup = d3.select("#"+divName).append("div")
     .attr("class","subtitle")
     .html("State Vote Margin Difference - National Vote Margin Difference<br> States: "+statesToInclude.join(","))
@@ -172,15 +174,13 @@ function drawChart(statesToInclude,countyDif,nationalData,divName,formattedState
     for(var n in nationalData){
         nationalDictionary[nationalData[n].year]=nationalData[n].dMinusR
     }
-     var w = 600
-    var p = 40
-    var h = 400
+
     var popup = d3.select("#"+divName).append("div").attr("class","subtitle").html("<br>Rep-Dem/Total Votes<br>states:"+statesToInclude.join(","))
   //  var popup = d3.select("#"+divName).append("div").html("rollover to see data").attr('id',divName+"title")
 
     var svg = d3.select("#"+divName).append("svg").attr("width",w).attr("height",h)
 
-    var xScale = d3.scaleLinear().domain([-40,40]).range([w-p*2,0])
+    var xScale = d3.scaleLinear().domain([-50,50]).range([w-p*2,0])
     var yScale = d3.scaleLinear().domain([2004,2024]).range([0,h-p*2])
     var widthScale = d3.scaleLinear().domain([0,5000000]).range([3,10])
 
