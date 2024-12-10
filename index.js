@@ -6,7 +6,7 @@ Promise.all([d3.csv("1976-2020-president.csv"),d3.csv("election by state - 2024.
     var formattedState2024 = getDif2024(state2024)
     var national2024 = {year:2024,d:74459177,r:76938892,total:154905224}
     var nationalMargin2024 = (national2024.d-national2024.r)/national2024.total*100
-    national2024["dMinusR"]=nationalMargin2024
+    national2024["rMinusD"]=nationalMargin2024
    // console.log(formattedState2024)
     var stateData = d[0]
 
@@ -46,7 +46,7 @@ var h = 300
 function drawNationalComparisonChart(statesToInclude,countyDif,nationalData,divName,formattedState2024){
     var nationalDictionary = {}
     for(var n in nationalData){
-        nationalDictionary[nationalData[n].year]=nationalData[n].dMinusR
+        nationalDictionary[nationalData[n].year]=nationalData[n].rMinusD
     }
 
     var popup = d3.select("#"+divName).append("div")
@@ -88,7 +88,7 @@ function drawNationalComparisonChart(statesToInclude,countyDif,nationalData,divN
     .attr("stroke-width",2)
     .attr("d",
         d3.line().curve(d3.curveBumpY)
-        .x(function(d){return xScale(d.dMinusR-nationalDictionary[d.year])})
+        .x(function(d){return xScale(d.rMinusD-nationalDictionary[d.year])})
         .y(function(d,i){return yScale(d.year)})
         (nationalData)
     )
@@ -97,15 +97,15 @@ function drawNationalComparisonChart(statesToInclude,countyDif,nationalData,divN
     for(var c in countyDif){
         var state = countyDif[c][0].state
         if(statesToInclude.indexOf(state)>-1){
-            var with2024 = countyDif[c].concat({year:2024,state:countyDif[c][0].state,dMinusR:formattedState2024[countyDif[c][0].state]})
+            var with2024 = countyDif[c].concat({year:2024,state:countyDif[c][0].state,rMinusD:formattedState2024[countyDif[c][0].state]})
             // console.log(state)
-            // console.log(xScale(countyDif[c][0].dMinusR))
+            // console.log(xScale(countyDif[c][0].rMinusD))
 
             lines.append("path")
             .attr("total",countyDif[c][0].sum)
             .attr("state",state)
             .attr("fips",c)
-            .attr('stroke',cScale(countyDif[c][0].dMinusR))
+            .attr('stroke',cScale(countyDif[c][0].rMinusD))
             .attr('fill',"none")
             .attr("stroke-width",widthScale(countyDif[c][0].sum))
             .attr("opacity",.2)
@@ -113,32 +113,32 @@ function drawNationalComparisonChart(statesToInclude,countyDif,nationalData,divN
             .attr("d",
                 d3.line().curve(d3.curveBumpY)
                 .x(function(d){
-                    return xScale(d.dMinusR-nationalDictionary[d.year])})
+                    return xScale(d.rMinusD-nationalDictionary[d.year])})
                 .y(function(d,i){return yScale(d.year)})
                 (with2024)
             )
             .on("mouseover",function(e,d){
                 var currentState = d3.select(this).attr('state')
-                var dMinusR = formattedState2024[currentState]
+                var rMinusD = formattedState2024[currentState]
                 d3.select(this).attr("opacity",.5)
                 d3.select("#"+divName+"title").html(d3.select(this).attr("state")+", total votes: "+d3.select(this).attr("total"))
                 
                 lines.append("text")
                 .text(currentState)
                 .attr("y",h-p*1.5)
-                .attr("x",xScale(dMinusR-nationalDictionary["2024"]))
+                .attr("x",xScale(rMinusD-nationalDictionary["2024"]))
                 .attr("class","stateLabels")
 
                 lines.append("text")
                 .attr("class","yearLabels2024")
                 .text(function(){
-                    if(dMinusR<1){
-                        return "+"+Math.round(Math.abs(dMinusR-nationalDictionary["2024"])*10)/10+" R"
+                    if(rMinusD<1){
+                        return "+"+Math.round(Math.abs(rMinusD-nationalDictionary["2024"])*10)/10+" R"
                     }
-                    return "+"+Math.round(Math.abs(dMinusR-nationalDictionary["2024"])*10)/10+ "D"
+                    return "+"+Math.round(Math.abs(rMinusD-nationalDictionary["2024"])*10)/10+ "D"
                 }
                 )
-                .attr("x",xScale(dMinusR-nationalDictionary["2024"]))
+                .attr("x",xScale(rMinusD-nationalDictionary["2024"]))
                 .attr("y",yScale(2024)+4)
 
                 lines.selectAll(".yearLabels")
@@ -146,14 +146,14 @@ function drawNationalComparisonChart(statesToInclude,countyDif,nationalData,divN
                 .enter()
                 .append("text")
                 .attr("class","yearLabels")
-                .attr("fill",function(d){return cScale(d.dMinusR)})
-                .attr("x",function(d){return xScale(d.dMinusR-nationalDictionary[d.year])+4})
+                .attr("fill",function(d){return cScale(d.rMinusD)})
+                .attr("x",function(d){return xScale(d.rMinusD-nationalDictionary[d.year])+4})
                 .attr("y",function(d,i){return yScale(d.year)+4})
                 .text(function(d){
-                    if(d.dMinusR<1){
-                        return "+"+Math.round(Math.abs(d.dMinusR-nationalDictionary[d.year])*10)/10+" R"
+                    if(d.rMinusD<0){
+                        return "+"+Math.round(Math.abs(d.rMinusD-nationalDictionary[d.year])*10)/10+" R"
                     }
-                    return "+"+Math.round(Math.abs(d.dMinusR-nationalDictionary[d.year])*10)/10+ "D"
+                    return "+"+Math.round(Math.abs(d.rMinusD-nationalDictionary[d.year])*10)/10+ "D"
                 })
             })
             .on("mouseout",function(e,d){
@@ -172,7 +172,7 @@ function drawNationalComparisonChart(statesToInclude,countyDif,nationalData,divN
 function drawChart(statesToInclude,countyDif,nationalData,divName,formattedState2024){
     var nationalDictionary = {}
     for(var n in nationalData){
-        nationalDictionary[nationalData[n].year]=nationalData[n].dMinusR
+        nationalDictionary[nationalData[n].year]=nationalData[n].rMinusD
     }
 
     var popup = d3.select("#"+divName).append("div").attr("class","subtitle").html("<br>Rep-Dem/Total Votes<br>states:"+statesToInclude.join(","))
@@ -180,7 +180,7 @@ function drawChart(statesToInclude,countyDif,nationalData,divName,formattedState
 
     var svg = d3.select("#"+divName).append("svg").attr("width",w).attr("height",h)
 
-    var xScale = d3.scaleLinear().domain([-40,40]).range([w-p*2,0])
+    var xScale = d3.scaleLinear().domain([-40,40]).range([0,w-p*2])
     var yScale = d3.scaleLinear().domain([2004,2024]).range([0,h-p*2])
     var widthScale = d3.scaleLinear().domain([0,5000000]).range([3,10])
 
@@ -205,7 +205,7 @@ function drawChart(statesToInclude,countyDif,nationalData,divName,formattedState
     var yAxis = d3.axisLeft().scale(yScale).tickValues([2004,2008,2012,2016,2020,2024]).tickFormat(function(d){return String(d)}).tickSize(w-p*2)
     svg.append("g").call(yAxis).attr("transform","translate("+(w-p)+","+p+")").attr("stroke-width","1")
     .attr("opacity",".3")
-    var cScale = d3.scaleLinear().domain([-5,5]).range(["red","blue"])
+    var cScale = d3.scaleLinear().domain([-5,5]).range(["blue","red"])
     var lines = svg.append("g").attr("transform","translate("+p+","+p+")")
 
     lines.append("path")
@@ -215,18 +215,18 @@ function drawChart(statesToInclude,countyDif,nationalData,divName,formattedState
     .attr("stroke-width",2)
     .attr("d",
         d3.line().curve(d3.curveBumpY)
-        .x(function(d){return xScale(d.dMinusR)})
+        .x(function(d){return xScale(d.rMinusD)})
         .y(function(d,i){return yScale(d.year)})
         (nationalData)
     )
     lines.append("text").text("National")
-    .attr("x",xScale(nationalData[0].dMinusR)+5).attr("y",-10)
+    .attr("x",xScale(nationalData[0].rMinusD)+5).attr("y",-10)
     //.attr("text-anchor","middle")
     lines.selectAll(".dots")
         .data(nationalData)
         .enter()
         .append("circle")
-        .attr("cx",function(d){return xScale(d.dMinusR)})
+        .attr("cx",function(d){return xScale(d.rMinusD)})
         .attr("cy",function(d,i){return yScale(d.year)})
         .attr("r",3)
 
@@ -234,55 +234,55 @@ function drawChart(statesToInclude,countyDif,nationalData,divName,formattedState
         .data(nationalData)
         .enter()
         .append("text")
-        .attr("x",function(d){return xScale(d.dMinusR)+4})
+        .attr("x",function(d){return xScale(d.rMinusD)+4})
         .attr("y",function(d,i){return yScale(d.year)+4})
-        .text(function(d){return "+"+Math.abs(Math.round(d.dMinusR))})
+        .text(function(d){return "+"+Math.abs(Math.round(d.rMinusD))})
 
        
     for(var c in countyDif){
         var state = countyDif[c][0].state
         if(statesToInclude.indexOf(state)>-1){
 
-            var with2024 = countyDif[c].concat({year:2024,state:countyDif[c][0].state,dMinusR:formattedState2024[countyDif[c][0].state]})
+            var with2024 = countyDif[c].concat({year:2024,state:countyDif[c][0].state,rMinusD:formattedState2024[countyDif[c][0].state]})
            // console.log(with2024)
             lines.append("path")
             .attr("total",countyDif[c][0].sum)
             .attr("state",countyDif[c][0].state)
             .attr("fips",c)
             //.attr("stroke","#000")
-            .attr('stroke',cScale(countyDif[c][0].dMinusR))
+            .attr('stroke',cScale(countyDif[c][0].rMinusD))
             .attr('fill',"none")
             .attr("stroke-width",widthScale(countyDif[c][0].sum))
             .attr("opacity",.2)
                 .attr("class","lines")
                 .attr("d",
                     d3.line().curve(d3.curveBumpY)
-                    .x(function(d){return xScale(d.dMinusR)})
+                    .x(function(d){return xScale(d.rMinusD)})
                     .y(function(d,i){return yScale(d.year)})
                     (with2024)
             )
             .on("mouseover",function(e,d){
                 var currentState = d3.select(this).attr('state')
-                var dMinusR = formattedState2024[currentState]
+                var rMinusD = formattedState2024[currentState]
                 d3.select(this).attr("opacity",.5)
                 d3.select("#"+divName+"title").html(d3.select(this).attr("state")+", total votes: "+d3.select(this).attr("total"))
 
                 lines.append("text")
                 .text(currentState)
                 .attr("y",h-p*1.5)
-                .attr("x",xScale(dMinusR-nationalDictionary["2024"]))
+                .attr("x",xScale(rMinusD-nationalDictionary["2024"]))
                 .attr("class","stateLabels")
 
                 lines.append("text")
                 .attr("class","yearLabels2024")
                 .text(function(){
-                    if(dMinusR<1){
-                        return "+"+Math.round(Math.abs(dMinusR-nationalDictionary["2024"])*10)/10+" R"
+                    if(rMinusD>0){
+                        return "+"+Math.round(Math.abs(rMinusD-nationalDictionary["2024"])*10)/10+" R"
                     }
-                    return "+"+Math.round(Math.abs(dMinusR-nationalDictionary["2024"])*10)/10+ "D"
+                    return "+"+Math.round(Math.abs(rMinusD-nationalDictionary["2024"])*10)/10+ "D"
                 }
                 )
-                .attr("x",xScale(dMinusR-nationalDictionary["2024"]))
+                .attr("x",xScale(rMinusD-nationalDictionary["2024"]))
                 .attr("y",yScale(2024)+4)
 
                 lines.selectAll(".yearLabels")
@@ -290,14 +290,14 @@ function drawChart(statesToInclude,countyDif,nationalData,divName,formattedState
                 .enter()
                 .append("text")
                 .attr("class","yearLabels")
-                .attr("fill",function(d){return cScale(d.dMinusR)})
-                .attr("x",function(d){return xScale(d.dMinusR)+4})
+                .attr("fill",function(d){return cScale(d.rMinusD)})
+                .attr("x",function(d){return xScale(d.rMinusD)+4})
                 .attr("y",function(d,i){return yScale(d.year)+10})
                 .text(function(d){
-                    if(d.dMinusR<1){
-                        return "+"+Math.round(Math.abs(d.dMinusR)*10)/10+" R"
+                    if(d.rMinusD>0){
+                        return "+"+Math.round(Math.abs(d.rMinusD)*10)/10+" R"
                     }
-                    return "+"+Math.round(Math.abs(d.dMinusR)*10)/10+ "D"
+                    return "+"+Math.round(Math.abs(d.rMinusD)*10)/10+ "D"
                 })
             })
             .on("mouseout",function(e,d){
@@ -352,7 +352,7 @@ function tallyNational(data){
         var r = national["REPUBLICAN"][year]
         var all = national["TOTALS"][year]
         var difference = (d-r)/all*100
-        differences.push({year:year,dMinusR:difference, all:all,d:d,r:r})
+        differences.push({year:year,rMinusD:difference, all:all,d:d,r:r})
     }
     return differences
 }
@@ -399,7 +399,7 @@ function formatByState(data){
             }
         }       
     }
-    console.log(formatted)
+   // console.log(formatted)
 
 var difference = {}
 
@@ -411,11 +411,12 @@ for(var f in formatted){
             var dVotes = parseInt(formatted[f]["DEMOCRAT"][d]) 
             var rVotes = parseInt(formatted[f]["REPUBLICAN"][d])
             var total = parseInt(formatted[f]["total"][d])
-            var dMinusR = (dVotes-rVotes)/(total)*100
-            difference[f].push({year:d,dMinusR:dMinusR,sum:total,state:formatted[f]["state"]})
+            var rMinusD = (rVotes-dVotes)/(total)*100
+            difference[f].push({year:d,rMinusD:rMinusD,sum:total,state:formatted[f]["state"]})
         }
     
     })
 }
+//console.log(difference)
     return difference
 }
